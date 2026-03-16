@@ -34,53 +34,54 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen py-8 px-4">
+    <div className="min-h-screen py-10 px-4">
       <div className="max-w-2xl mx-auto">
         {/* Header */}
-        <header className="mb-6">
-          <h1 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+        <header className="mb-8">
+          <div className="inline-block px-3 py-1 rounded-md bg-primary/10 text-primary text-xs font-semibold uppercase tracking-widest mb-3">
             Ruta Operativa
-          </h1>
-          <p className="text-2xl font-bold text-foreground mt-1">
+          </div>
+          <h1 className="text-3xl font-bold text-foreground">
             Barranquilla → Ayapel
-          </p>
-          <p className="text-sm text-muted-foreground mt-1">
-            {paradasBarranquillaAyapel.length} paradas intermedias · Selecciona y ajusta individualmente
+          </h1>
+          <p className="text-sm text-muted-foreground mt-2">
+            {paradasBarranquillaAyapel.length} paradas · Selecciona y ajusta el porcentaje de cada una
           </p>
         </header>
 
         {/* Global controls */}
         <div
-          className="p-4 rounded-xl mb-6 flex flex-col sm:flex-row items-stretch sm:items-end gap-3 bg-card"
-          style={{ boxShadow: "0 0 0 1px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.05)" }}
+          className="p-5 rounded-xl mb-6 bg-card"
+          style={{ boxShadow: "var(--shadow-card)" }}
         >
-          <button
-            onClick={selectAll}
-            className="text-xs font-semibold text-primary hover:underline shrink-0 self-start sm:self-center"
-          >
-            {selected.size === paradasBarranquillaAyapel.length ? "Deseleccionar todas" : "Seleccionar todas"}
-          </button>
-          <div className="flex-1 flex items-end gap-2">
-            <div className="flex-1">
-              <label className="block text-xs font-medium text-muted-foreground mb-1">
-                % Global para seleccionadas
-              </label>
-              <input
-                type="number"
-                step="0.01"
-                value={globalPct}
-                onChange={(e) => setGlobalPct(e.target.value)}
-                placeholder="Ej: 10"
-                className="w-full px-3 py-2 rounded-lg border-0 text-sm font-mono bg-card text-foreground outline-none transition-all duration-150 focus:ring-2 focus:ring-primary/20"
-                style={{ boxShadow: "var(--shadow-input)" }}
-              />
-            </div>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-end gap-3">
             <button
-              onClick={applyGlobal}
-              className="px-4 py-2 bg-primary text-primary-foreground text-sm font-semibold rounded-lg hover:brightness-110 transition-all duration-150 shrink-0"
+              onClick={selectAll}
+              className="text-xs font-semibold text-primary hover:text-primary/80 transition-colors shrink-0 self-start sm:self-center underline underline-offset-2"
             >
-              Aplicar
+              {selected.size === paradasBarranquillaAyapel.length ? "Deseleccionar todas" : "Seleccionar todas"}
             </button>
+            <div className="flex-1 flex items-end gap-2">
+              <div className="flex-1">
+                <label className="block text-xs font-medium text-muted-foreground mb-1.5">
+                  % Global para seleccionadas
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={globalPct}
+                  onChange={(e) => setGlobalPct(e.target.value)}
+                  placeholder="Ej: 10"
+                  className="w-full px-3 py-2.5 rounded-lg border border-border text-sm font-mono bg-secondary/50 text-foreground outline-none transition-all duration-150 focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                />
+              </div>
+              <button
+                onClick={applyGlobal}
+                className="px-5 py-2.5 bg-primary text-primary-foreground text-sm font-semibold rounded-lg hover:brightness-110 transition-all duration-150 shrink-0"
+              >
+                Aplicar
+              </button>
+            </div>
           </div>
         </div>
 
