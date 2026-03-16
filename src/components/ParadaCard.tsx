@@ -19,10 +19,10 @@ const ParadaCard = ({ parada, porcentaje, onPorcentajeChange, isSelected, onTogg
 
   return (
     <div
-      className={`rounded-xl transition-all duration-150 ${
-        isSelected ? "bg-card ring-2 ring-primary/20" : "bg-card opacity-60"
+      className={`rounded-xl transition-all duration-150 bg-card ${
+        isSelected ? "ring-2 ring-primary/30" : "opacity-70"
       }`}
-      style={{ boxShadow: "0 0 0 1px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.05)" }}
+      style={{ boxShadow: "var(--shadow-card)" }}
     >
       {/* Header row */}
       <button
@@ -32,7 +32,7 @@ const ParadaCard = ({ parada, porcentaje, onPorcentajeChange, isSelected, onTogg
         <div className="flex items-center gap-3">
           <div
             className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all duration-150 ${
-              isSelected ? "bg-primary border-primary" : "border-muted-foreground/30"
+              isSelected ? "bg-primary border-primary" : "border-muted-foreground/40"
             }`}
           >
             {isSelected && (
@@ -43,17 +43,17 @@ const ParadaCard = ({ parada, porcentaje, onPorcentajeChange, isSelected, onTogg
           </div>
           <div>
             <span className="text-sm font-semibold text-foreground">{parada.ciudad}</span>
-            <span className="text-xs text-muted-foreground ml-2">{parada.departamento}</span>
+            <span className="text-xs text-muted-foreground ml-2">· {parada.departamento}</span>
           </div>
         </div>
-        <div className="flex gap-4 text-right">
+        <div className="flex gap-5 text-right">
           <div>
-            <span className="block text-[10px] uppercase tracking-wider text-muted-foreground">Mín</span>
-            <span className="text-sm font-mono font-medium text-foreground">{formatCurrency(parada.precioMin)}</span>
+            <span className="block text-[10px] uppercase tracking-wider text-muted-foreground mb-0.5">Mín</span>
+            <span className="text-sm font-mono font-semibold text-foreground">{formatCurrency(parada.precioMin)}</span>
           </div>
           <div>
-            <span className="block text-[10px] uppercase tracking-wider text-muted-foreground">Máx</span>
-            <span className="text-sm font-mono font-medium text-foreground">{formatCurrency(parada.precioMax)}</span>
+            <span className="block text-[10px] uppercase tracking-wider text-muted-foreground mb-0.5">Máx</span>
+            <span className="text-sm font-mono font-semibold text-foreground">{formatCurrency(parada.precioMax)}</span>
           </div>
         </div>
       </button>
@@ -63,7 +63,7 @@ const ParadaCard = ({ parada, porcentaje, onPorcentajeChange, isSelected, onTogg
         <div className="px-4 pb-4 pt-0">
           <div className="border-t border-dashed border-border pt-4">
             <div className="flex items-end gap-3">
-              <div className="flex-1">
+              <div className="flex-1 max-w-[140px]">
                 <label className="block text-xs font-medium text-muted-foreground mb-1.5">
                   Ajuste (%)
                 </label>
@@ -73,21 +73,20 @@ const ParadaCard = ({ parada, porcentaje, onPorcentajeChange, isSelected, onTogg
                   value={porcentaje}
                   onChange={(e) => onPorcentajeChange(e.target.value)}
                   placeholder="0"
-                  className="w-full px-3 py-2 rounded-lg border-0 text-sm font-mono bg-card text-foreground outline-none transition-all duration-150 focus:ring-2 focus:ring-primary/20"
-                  style={{ boxShadow: "var(--shadow-input)" }}
+                  className="w-full px-3 py-2 rounded-lg border border-border text-sm font-mono bg-secondary/50 text-foreground outline-none transition-all duration-150 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                 />
               </div>
               {hasResult && (
-                <div className="flex gap-4 pb-0.5">
+                <div className="flex gap-5 pb-0.5 ml-auto">
                   <div className="text-right">
-                    <span className="block text-[10px] uppercase tracking-wider text-muted-foreground">Final Mín</span>
-                    <span className="text-base font-bold text-primary font-mono">
+                    <span className="block text-[10px] uppercase tracking-wider text-muted-foreground mb-0.5">Final Mín</span>
+                    <span className="text-lg font-bold text-primary font-mono">
                       {formatCurrency(finalMin!)}
                     </span>
                   </div>
                   <div className="text-right">
-                    <span className="block text-[10px] uppercase tracking-wider text-muted-foreground">Final Máx</span>
-                    <span className="text-base font-bold text-primary font-mono">
+                    <span className="block text-[10px] uppercase tracking-wider text-muted-foreground mb-0.5">Final Máx</span>
+                    <span className="text-lg font-bold text-primary font-mono">
                       {formatCurrency(finalMax!)}
                     </span>
                   </div>
