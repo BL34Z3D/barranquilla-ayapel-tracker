@@ -1,107 +1,105 @@
 import { useState } from "react";
-
-const PRECIO_MIN = 90000;
-const PRECIO_MAX = 120000;
-
-const formatCurrency = (value: number) =>
-  "$" + value.toLocaleString("es-CO", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+import { paradasBarranquillaAyapel } from "@/data/rutas";
+import ParadaCard from "@/components/ParadaCard";
 
 const Index = () => {
-  const [porcentaje, setPorcentaje] = useState<string>("");
-  const [resultado, setResultado] = useState<{ min: number; max: number } | null>(null);
+  const [selected, setSelected] = useState<Set<number>>(new Set());
+  const [porcentajes, setPorcentajes] = useState<Record<number, string>>({});
+  const [globalPct, setGlobalPct] = useState("");
 
-  const calcular = () => {
-    const pct = parseFloat(porcentaje);
-    if (isNaN(pct)) return;
-    setResultado({
-      min: PRECIO_MIN * (1 + pct / 100),
-      max: PRECIO_MAX * (1 + pct / 100),
+  const toggleParada = (idx: number) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(idx)) next.delete(idx);
+      else next.add(idx);
+      return next;
     });
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") calcular();
+  const selectAll = () => {
+    if (selected.size === paradasBarranquillaAyapel.length) {
+      setSelected(new Set());
+    } else {
+      setSelected(new Set(paradasBarranquillaAyapel.map((_, i) => i)));
+    }
+  };
+
+  const applyGlobal = () => {
+    if (!globalPct) return;
+    const updated: Record<number, string> = { ...porcentajes };
+    selected.forEach((idx) => {
+      updated[idx] = globalPct;
+    });
+    setPorcentajes(updated);
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-4">
-      <main
-        className="w-full max-w-md p-8 bg-card rounded-xl"
-        style={{ boxShadow: "var(--shadow-card)" }}
-      >
-        <header className="mb-8">
-          <h1 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+    <div className="min-h-screen py-8 px-4">
+      <div className="max-w-2xl mx-auto">
+        {/* Header */}
+        <header className="mb-6">
+          <h1 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
             Ruta Operativa
           </h1>
-          <p className="text-xl font-bold text-foreground mt-1">
+          <p className="text-2xl font-bold text-foreground mt-1">
             Barranquilla → Ayapel
+          </p>
+          <p className="text-sm text-muted-foreground mt-1">
+            {paradasBarranquillaAyapel.length} paradas intermedias · Selecciona y ajusta individualmente
           </p>
         </header>
 
-        {/* Base Values */}
-        <div className="grid grid-cols-2 gap-4 mb-8">
-          <div className="p-4 rounded-lg" style={{ backgroundColor: "hsl(var(--surface))" }}>
-            <span className="block text-xs text-muted-foreground mb-1">Mínimo Base</span>
-            <span className="text-lg font-mono font-medium text-foreground">
-              {formatCurrency(PRECIO_MIN)}
-            </span>
-          </div>
-          <div className="p-4 rounded-lg" style={{ backgroundColor: "hsl(var(--surface))" }}>
-            <span className="block text-xs text-muted-foreground mb-1">Máximo Base</span>
-            <span className="text-lg font-mono font-medium text-foreground">
-              {formatCurrency(PRECIO_MAX)}
-            </span>
-          </div>
-        </div>
-
-        {/* Input */}
-        <div className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">
-              Porcentaje de Ajuste (%)
-            </label>
-            <input
-              type="number"
-              step="0.01"
-              value={porcentaje}
-              onChange={(e) => setPorcentaje(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Ej: 15"
-              className="w-full px-4 py-3 rounded-lg border-0 text-lg font-mono bg-card text-foreground outline-none transition-all duration-150 focus:ring-2 focus:ring-primary/20"
-              style={{ boxShadow: "var(--shadow-input)" }}
-            />
-          </div>
+        {/* Global controls */}
+        <div
+          className="p-4 rounded-xl mb-6 flex flex-col sm:flex-row items-stretch sm:items-end gap-3 bg-card"
+          style={{ boxShadow: "0 0 0 1px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.05)" }}
+        >
           <button
-            onClick={calcular}
-            className="w-full bg-primary text-primary-foreground font-semibold py-3 rounded-lg hover:brightness-110 transition-all duration-150 shadow-sm"
+            onClick={selectAll}
+            className="text-xs font-semibold text-primary hover:underline shrink-0 self-start sm:self-center"
           >
-            Calcular Tarifas Finales
+            {selected.size === paradasBarranquillaAyapel.length ? "Deseleccionar todas" : "Seleccionar todas"}
           </button>
+          <div className="flex-1 flex items-end gap-2">
+            <div className="flex-1">
+              <label className="block text-xs font-medium text-muted-foreground mb-1">
+                % Global para seleccionadas
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                value={globalPct}
+                onChange={(e) => setGlobalPct(e.target.value)}
+                placeholder="Ej: 10"
+                className="w-full px-3 py-2 rounded-lg border-0 text-sm font-mono bg-card text-foreground outline-none transition-all duration-150 focus:ring-2 focus:ring-primary/20"
+                style={{ boxShadow: "var(--shadow-input)" }}
+              />
+            </div>
+            <button
+              onClick={applyGlobal}
+              className="px-4 py-2 bg-primary text-primary-foreground text-sm font-semibold rounded-lg hover:brightness-110 transition-all duration-150 shrink-0"
+            >
+              Aplicar
+            </button>
+          </div>
         </div>
 
-        {/* Results */}
-        {resultado && (
-          <div className="mt-8 pt-8 border-t border-dashed border-border">
-            <h2 className="text-sm font-semibold text-muted-foreground mb-4 uppercase tracking-wider">
-              Precios Finales (+{porcentaje}%)
-            </h2>
-            <div className="space-y-4">
-              <div className="flex justify-between items-end">
-                <span className="text-sm text-foreground">Venta Mínima</span>
-                <span className="text-2xl font-bold text-primary font-mono">
-                  {formatCurrency(resultado.min)}
-                </span>
-              </div>
-              <div className="flex justify-between items-end">
-                <span className="text-sm text-foreground">Venta Máxima</span>
-                <span className="text-2xl font-bold text-primary font-mono">
-                  {formatCurrency(resultado.max)}
-                </span>
-              </div>
-            </div>
-          </div>
-        )}
-      </main>
+        {/* Paradas list */}
+        <div className="space-y-3">
+          {paradasBarranquillaAyapel.map((parada, idx) => (
+            <ParadaCard
+              key={idx}
+              parada={parada}
+              porcentaje={porcentajes[idx] || ""}
+              onPorcentajeChange={(val) =>
+                setPorcentajes((prev) => ({ ...prev, [idx]: val }))
+              }
+              isSelected={selected.has(idx)}
+              onToggle={() => toggleParada(idx)}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
